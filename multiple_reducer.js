@@ -1,14 +1,16 @@
 const redux = require("redux");
 const createStore = redux.createStore;
+// to combine multiple reducers
+const combineReducers = redux.combineReducers;
 const ORDER_PIZZA = "ORDER_PIZZA";
+const ORDER_BURGER = "ORDER_BURGER";
 
-//Action
-// const action = {
-//   type: ORDER_PIZZA,
-//   shop_name:'Pizza Shop'
-// }
+function orderBurger() {
+  return {
+    type: ORDER_BURGER,
+  }
+};
 
-//Action Creator
 function orderPizza() {
   return {
     type: ORDER_PIZZA,
@@ -16,27 +18,47 @@ function orderPizza() {
   };
 }
 
-//Reducer
-const initialState = {
+const initialStateForPizza = {
   pizzaBase: 100,
-  toppings: ["cheese", "tomato", "onion"],
 };
 
-const reducer = (state = initialState, action) => {
+const initialStateForBurger = {
+  burgerBuns: 200,
+};
+
+const reducerPizza = (state = initialStateForPizza, action) => {
   switch (action.type) {
     case ORDER_PIZZA:
       return {
         ...state,
         pizzaBase: state.pizzaBase - 1,
-      };
+      };  
     default:
       return state;
   }
 };
 
+const reducerBurger = (state = initialStateForBurger, action) => {
+  switch (action.type) {
+    case ORDER_BURGER:
+      return {
+        ...state,
+        burgerBuns: state.burgerBuns - 1,
+      };  
+    default:
+      return state;
+  }
+};
+
+// combine reducers
+const rootReducer = combineReducers({
+  pizza: reducerPizza,
+  burger: reducerBurger,
+});
+
 // STORE
 // 1- Store needs to hold application state
-const store = createStore(reducer);
+const store = createStore(rootReducer);
 
 // 2 - It exposes a getState() method to access the current state
 console.log("Initial State", store.getState());
@@ -49,7 +71,7 @@ const unsubscribe = store.subscribe(() => {
 // 4 - Allowing state to be updated via dispatch(action)
 store.dispatch(orderPizza());
 store.dispatch(orderPizza());
-store.dispatch(orderPizza());
+store.dispatch(orderBurger());
 unsubscribe();
 store.dispatch(orderPizza());
 store.dispatch(orderPizza());
