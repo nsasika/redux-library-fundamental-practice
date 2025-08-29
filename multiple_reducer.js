@@ -2,6 +2,9 @@ const redux = require("redux");
 const createStore = redux.createStore;
 // to combine multiple reducers
 const combineReducers = redux.combineReducers;
+const reduxLogger = require("redux-logger");
+const logger = reduxLogger.createLogger();
+const applyMiddleware = redux.applyMiddleware;
 const ORDER_PIZZA = "ORDER_PIZZA";
 const ORDER_BURGER = "ORDER_BURGER";
 
@@ -58,15 +61,13 @@ const rootReducer = combineReducers({
 
 // STORE
 // 1- Store needs to hold application state
-const store = createStore(rootReducer);
+const store = createStore(rootReducer,applyMiddleware(logger));
 
 // 2 - It exposes a getState() method to access the current state
 console.log("Initial State", store.getState());
 
 // 3 - Registering listeners via subscribe(listener)
-const unsubscribe = store.subscribe(() => {
-  console.log("Updated State", store.getState());
-});
+const unsubscribe = store.subscribe(() => {});
 
 // 4 - Allowing state to be updated via dispatch(action)
 store.dispatch(orderPizza());
